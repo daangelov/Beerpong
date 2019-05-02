@@ -1,0 +1,25 @@
+{% extends 'layouts/app.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron bg-transparent">
+            <h1 class="">How about some beerpong with a robot?</h1>
+            <p class="lead">Pick up an username and start playing!</p>
+            <hr class="my-4">
+
+            <form>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="sr-only" for="username">Username</label>
+                        <input type="text" class="form-control" name="username" id="username" placeholder="Username...">
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <div style="height:100px;width:100px;" class="m-auto">
+                            <button type="submit" class="btn btn-lg rounded-circle btn-danger h-100 w-100 text-uppercase">Play</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
