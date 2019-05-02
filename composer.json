@@ -6,7 +6,8 @@
         "slim/slim": "*",
         "slim/twig-view": "*",
         "ext-pdo": "*",
-        "vlucas/phpdotenv": "*"
+        "vlucas/phpdotenv": "*",
+        "slim/flash": "^0.4.0"
     },
     "autoload": {
         "psr-4": {

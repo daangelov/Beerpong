@@ -23,8 +23,8 @@ class RedirectIfUnauthenticated
 
     public function __invoke(Request $request, Response $response, $next)
     {
-        if (false) {//!isset($_SESSION['user_id'])) {
-            return $response->withRedirect($this->router->pathFor('login'), 302);
+        if (!isset($_SESSION['logged'])) {
+            return $response->withRedirect($this->router->pathFor('index'), 302);
         }
 
         return $next($request, $response);

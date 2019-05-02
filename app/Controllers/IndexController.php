@@ -2,89 +2,49 @@
 
 namespace App\Controllers;
 
+use PDO;
+use Slim\Flash\Messages;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Router;
 use Slim\Views\Twig;
 
 /**
  * @property Twig view
+ * @property Router router
+ * @property Messages flash
+ * @property PDO db
  */
 class IndexController extends Controller
 {
-    public function index(Request $request, Response $response)
+    public function indexPage(Request $request, Response $response)
     {
         return $this->view->render($response, 'index.twig');
     }
 
     public function login(Request $request, Response $response)
     {
-        return $this->view->render($response, 'login.twig');
-    }
+        $username = $request->getParam('username');
 
-    public function queue(Request $request, Response $response)
-    {
-        return $this->view->render($response, 'queue.twig');
-    }
-
-//    /**
-//     * @param Request $request
-//     * @param Response $response
-//     * @return \Psr\Http\Message\ResponseInterface
-//     */
-//    public function index(Request $request, Response $response)
-//    {
-//        $projects = $this->db
-//            ->query("SELECT * FROM projects")
-//            ->fetchAll(PDO::FETCH_ASSOC);
-//
-//        return $this->view->render($response, 'home.twig', compact("projects"));
-//    }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function show(Request $request, Response $response, array $args)
-    {
-        $project = $this->db->prepare("SELECT * FROM projects WHERE id = :id");
-
-        $project->execute(['id' => $args['id']]);
-
-        $project = $project->fetch(PDO::FETCH_OBJ);
-
-        if (!$project) {
-            return $this->view->render($response->withStatus(StatusCode::HTTP_NOT_FOUND), 'errors/404.twig');
+        // Validate username
+        $usernameLength = strlen($username);
+        if ($usernameLength < 1 || $usernameLength > 255) {
+            $this->flash->addMessage('error', 'Invalid username');
+            return $response->withRedirect($this->router->pathFor('index'));
         }
 
-        return $this->view->render($response, 'home.twig', compact("project"));
+
+
+        $_SESSION['username'] = $username;
+        $_SESSION['logged'] = true;
+
+        return $response->withRedirect($this->router->pathFor('queue'));
     }
 
-    public function showWithJson(Request $request, Response $response, array $args)
+    public function queuePage(Request $request, Response $response)
     {
-        $project = $this->db->prepare("SELECT * FROM projects WHERE id = :id");
-        $project->execute(['id' => $args['id']]);
+        $users = $this->db->query('SELECT * FROM sessions')->fetchAll(PDO::FETCH_ASSOC);
 
-        $project = $project->fetch(PDO::FETCH_OBJ);
-
-        if (!$project) {
-            return $response->withJson(['message' => 'This record does not exist!'], StatusCode::HTTP_NOT_FOUND);
-        }
-
-        return $response->withJson($project, StatusCode::HTTP_OK);
+        return $this->view->render($response, 'queue.twig', $users);
     }
-
-    // Basic methods
-
-    // index -> get all resources
-    // show  -> get one resource
-
-    // create -> get create page for resource
-    // store  -> create resource
-
-    // edit  -> get edit page for resource
-    // update -> update resource
-
-    // destroy -> delete resource
 }

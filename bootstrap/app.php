@@ -26,20 +26,7 @@ $app = new Slim\App([
     ]
 ]);
 
-// Get container
-$container = $app->getContainer();
-
-// Connect to database
-$db = new \App\Utils\Database();
-$container['db'] = $db->connect($container['settings']['database']);
-
-// Start session
-$sessionHandler = new App\Utils\Session($container->get('db'));
-session_set_save_handler($sessionHandler);
-session_name($_ENV['SESSION_NAME']);
-session_start();
-
 // Set dependencies in container
-require __DIR__ . '/dependencies.php';
+require __DIR__ . '/container.php';
 
 require dirname(__DIR__) . '/routes/routes.php';

@@ -1,7 +1,4 @@
 body {
-    background-image: url('../img/background2.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center top;
-    background-color: #231f20;
+    background: #231f20 url('../img/background2.jpg') no-repeat fixed center top;
+    font-family: 'Orbitron', sans-serif;
 }
