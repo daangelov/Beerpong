@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container">
         <div class="jumbotron bg-transparent">
-            <h1 class="">How about some beerpong with a robot?</h1>
+            <h1>How about some Beer Pong with a robot?</h1>
             <p class="lead">Pick up an username and start playing!</p>
             <hr class="my-4">
 
@@ -17,14 +17,14 @@
                             </div>
                             {% if flash.getMessage('error') %}
                                 <div class="col-12">
-                                    <small class="text-danger">
+                                    <small class="text-danger font-weight-bold">
                                         {{ flash.getMessage('error') | first }}
                                     </small>
                                 </div>
                             {% endif %}
                         </div>
                     </div>
-                    <div class="col-md-6 text-center mt-3">
+                    <div class="col-md-6 mt-3">
                         <div style="height:100px;width:100px;" class="m-auto">
                             <button type="submit" class="btn btn-lg rounded-circle btn-danger h-100 w-100 text-uppercase">Play</button>
                         </div>

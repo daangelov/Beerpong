@@ -4,9 +4,18 @@
 $container = $app->getContainer();
 
 // Register database connection
-$container['db'] = function ($container) {
-    $db = new \App\Utils\Database();
-    return $db->connect($container['settings']['database']);
+$container['db'] = function () {
+    $connectionString = $_ENV['DB_DRIVER'] .
+        ':host=' . $_ENV['DB_HOST'] .
+        ';port=' . $_ENV['DB_PORT'] .
+        ';dbname=' . $_ENV['DB_NAME'] .
+        ';charset=' . $_ENV['DB_CHARSET'] .
+        ';collation=' . $_ENV['DB_COLLATION'];
+
+    $db = new PDO($connectionString, $_ENV['DB_USER'], $_ENV['DB_PASS']);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    return $db;
 };
 
 // Register view in container

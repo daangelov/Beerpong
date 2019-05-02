@@ -17,4 +17,5 @@ $app->group('', function () {
 // Routes accessed only if logged
 $app->group('', function () {
     $this->get('/queue', IndexController::class . ':queuePage')->setName('queue');
+    $this->post('/logout', IndexController::class . ':logout')->setName('logout');
 })->add(new RedirectIfUnauthenticated($container['router']));

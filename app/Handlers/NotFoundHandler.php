@@ -109,6 +109,6 @@ class NotFoundHandler extends AbstractHandler
      */
     protected function renderHtmlNotFoundOutput($response)
     {
-        return $this->view->render($response, 'errors/404.twig');
+        return $this->view->render($response, '404.twig');
     }
 }

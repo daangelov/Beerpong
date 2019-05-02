@@ -43,8 +43,8 @@ class SessionSaveHandler implements SessionHandlerInterface
 
     public function write($session_id, $session_data)
     {
-        $stmt = $this->db->prepare('REPLACE INTO sessions (session_id, session_data, updated_on) VALUES (?, ?, CURRENT_TIMESTAMP)');
-        if ($stmt->execute([$session_id, $session_data])) {
+        $stmt = $this->db->prepare('INSERT INTO sessions (session_id, session_data) VALUES(:session_id, :session_data) ON DUPLICATE KEY UPDATE session_data = :session_data, updated_on = CURRENT_TIMESTAMP');
+        if ($stmt->execute([':session_id' => $session_id, ':session_data' => $session_data])) {
             return true;
         }
         return false;
