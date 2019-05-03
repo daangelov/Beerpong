@@ -46,6 +46,13 @@
             </div>
         </div>
 
-
     </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        const startScript = "{{ path_for('start') }}";
+        const gamePage = "{{ path_for('game') }}";
+    </script>
+    <script type="text/javascript" src="{{ base_url() }}/js/queue.js"></script>
 {% endblock %}

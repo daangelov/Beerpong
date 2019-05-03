@@ -76,4 +76,14 @@ class IndexController extends Controller
         session_destroy();
         return $response->withRedirect($this->router->pathFor('index'));
     }
+
+    public function start(Request $request, Response $response)
+    {
+        return $response->withJson(['st' => 0, 'msg' => 'Go play. Feels like I am babysitting lil J']);
+    }
+
+    public function gamePage(Request $request, Response $response)
+    {
+        return $this->view->render($response, 'game.twig');
+    }
 }

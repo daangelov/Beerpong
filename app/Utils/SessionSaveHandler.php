@@ -17,6 +17,7 @@ class SessionSaveHandler implements SessionHandlerInterface
     public function open($save_path, $name)
     {
         if ($this->db) {
+            //$this->gc();
             return true;
         }
         return false;
@@ -59,11 +60,12 @@ class SessionSaveHandler implements SessionHandlerInterface
         return false;
     }
 
-    public function gc($maxlifetime)
+    public function gc($maxlifetime = 86400)
     {
-        $maxlifetime = 86400; // 1 day
-        $stmt = $this->db->prepare("DELETE FROM sessions WHERE updated_on < CURRENT_TIMESTAMP - INTERVAL ? SECOND");
-        if ($stmt->execute([$maxlifetime])) {
+        $stmt = $this->db->prepare(
+            "DELETE FROM sessions WHERE updated_on < CURRENT_TIMESTAMP - INTERVAL :lifetime SECOND;
+            DELETE FROM users WHERE updated_on < CURRENT_TIMESTAMP - INTERVAL :lifetime SECOND;");
+        if ($stmt->execute([':lifetime' => $maxlifetime])) {
             return true;
         }
         return false;

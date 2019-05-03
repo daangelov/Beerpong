@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 02, 2019 at 05:42 PM
+-- Generation Time: May 03, 2019 at 02:22 PM
 -- Server version: 10.1.33-MariaDB
 -- PHP Version: 7.2.6
 
@@ -40,7 +40,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`session_id`, `session_data`, `created_on`, `updated_on`) VALUES
-('7h84iijnmqmiqcvd25rr3s0c03', 'slimFlash|a:0:{}username|s:8:\"Dragomir\";logged|b:1;', '2019-05-02 14:26:07', '2019-05-02 14:39:25');
+('7h84iijnmqmiqcvd25rr3s0c03', 'slimFlash|a:0:{}', '2019-05-03 11:21:54', '2019-05-03 11:21:54');
 
 -- --------------------------------------------------------
 
@@ -53,15 +53,8 @@ CREATE TABLE `users` (
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_on` datetime NOT NULL
+  `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `username`, `status`, `created_on`, `updated_on`) VALUES
-(24, 'Dragomir', 0, '2019-05-02 17:26:28', '0000-00-00 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -87,7 +80,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

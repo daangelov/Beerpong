@@ -3,7 +3,12 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 // Load environment variables form .env
-$dotenv = Dotenv\Dotenv::create(dirname(__DIR__));
+$factory = new \Dotenv\Environment\DotenvFactory([
+    new \Dotenv\Environment\Adapter\EnvConstAdapter(),
+    new \Dotenv\Environment\Adapter\ServerConstAdapter()
+]);
+
+$dotenv = \Dotenv\Dotenv::create(dirname(__DIR__), null, $factory);
 $dotenv->load();
 
 // Create app
