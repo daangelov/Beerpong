@@ -19,11 +19,11 @@
 
             <hr class="my-4">
 
-            <table class="table table-bordered table-hover bg-white">
+            <table class="table table-responsive table-bordered table-hover bg-white">
                 <thead>
                 <tr>
                     <th class="text-center">#</th>
-                    <th>Username</th>
+                    <th class="w-100">Username</th>
                     <th class="text-center">Status</th>
                 </tr>
                 </thead>
@@ -32,7 +32,7 @@
                 {% for user in users %}
                     <tr class="{{ user.bgColor }}">
                         <td class="text-center">{{ loop.index }} </td>
-                        <td>{{ user.username }}</td>
+                        <td class="w-100">{{ user.username }}</td>
                         <td class="text-center"><span class="badge badge-pill {{ user.badgeColor }}">{{ user.status }}</span></td>
                     </tr>
                 {% endfor %}
