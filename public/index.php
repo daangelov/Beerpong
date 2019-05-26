@@ -7,4 +7,5 @@ try {
 } catch (\Slim\Exception\MethodNotAllowedException $e) {
 } catch (\Slim\Exception\NotFoundException $e) {
 } catch (Exception $e) {
+
 }

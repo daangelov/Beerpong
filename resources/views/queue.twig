@@ -3,19 +3,26 @@
 {% block content %}
     <div class="container">
         <div class="jumbotron bg-transparent">
-            <h1 class="d-none d-md-block">
-                Please wait...
-                <i class="d-none d-md-inline-block fas fa-spinner fa-spin"></i>
-            </h1>
-            <h2 class="d-md-none text-center">
-                Please wait...
+            <h2 id="startMessage" class="d-none text-success text-center text-md-left">
+                Your game will start in<br>3<br>seconds...
             </h2>
-            <p class="text-center text-md-left">
-                The game will start automatically when your turn comes!
-            </p>
-            <div class="display-4 text-center d-md-none">
-                <i class="fas fa-spinner fa-spin"></i>
+
+            <div id="loadingMessage" class="row">
+                <div class="col-md-6">
+                    <h2 class="text-center text-md-left d-md-inline">
+                        Please wait...
+                    </h2>
+                    <p class="text-center text-md-left">
+                        The game will start automatically when your turn comes!
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div class="display-4 text-center d-md-inline">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </div>
             </div>
+
 
             <hr class="my-4">
 
@@ -26,16 +33,17 @@
                     <th class="w-100">Username</th>
                     <th class="text-center">Status</th>
                 </tr>
+                <tr id="tempUser" class="d-none">
+                    <td data-id="number" class="text-center"></td>
+                    <td data-id="username" class="w-100"></td>
+                    <td class="text-center">
+                        <span data-id="status" class="badge badge-pill">
+                        </span>
+                    </td>
+                </tr>
                 </thead>
 
-                <tbody>
-                {% for user in users %}
-                    <tr class="{{ user.bgColor }}">
-                        <td class="text-center">{{ loop.index }} </td>
-                        <td class="w-100">{{ user.username }}</td>
-                        <td class="text-center"><span class="badge badge-pill {{ user.badgeColor }}">{{ user.status }}</span></td>
-                    </tr>
-                {% endfor %}
+                <tbody id="usersTable">
                 </tbody>
             </table>
 
@@ -45,14 +53,15 @@
                 </form>
             </div>
         </div>
+    </div>
 
+    <div id="game" class="d-none"
+         data-checkStart="{{ path_for('checkStart') }}"
+         data-checkQueue="{{ path_for('checkQueue') }}"
+         data-game="{{ path_for('game') }}">
     </div>
 {% endblock %}
 
-{% block javascript %}
-    <script>
-        const startScript = "{{ path_for('start') }}";
-        const gamePage = "{{ path_for('game') }}";
-    </script>
+{% block js %}
     <script type="text/javascript" src="{{ base_url() }}/js/queue.js"></script>
 {% endblock %}

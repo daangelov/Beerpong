@@ -18,6 +18,9 @@ class RedirectIfAuthenticated
     public function __invoke(Request $request, Response $response, $next)
     {
         if (isset($_SESSION['logged'])) {
+            if ($request->isXhr()) {
+                return $response->withJson(['st' => 2]);
+            }
             return $response->withRedirect($this->router->pathFor('queue'), 302);
         }
 
