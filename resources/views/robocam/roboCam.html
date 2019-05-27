@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+	<link rel="icon" href="img/favicon.ico"/>
 <title>Yawcam</title>
 <style type="text/css">
 div.menu
@@ -196,7 +197,7 @@ function getMarker(val,testVal)
 	var str = null;
 	if(val == testVal)
 	{
-		str = "<img src=\"img/mrk.gif\" style=\"border:none;vertical-align: text-bottom;margin: 0px;\" alt=\"<--\">";
+		str = "<img src=\"img/robocam/mrk.gif\" style=\"border:none;vertical-align: text-bottom;margin: 0px;\" alt=\"<--\">";
 	}
 	else 
 	{
@@ -322,7 +323,7 @@ function moveForMobile(frame){
 	<div id="imgLyr" width=640 height=480>	
   	<p class="heading"> </p>
 
-	<img id="camImg" src="img/loading.png" onMouseOver="javascript:fixMenuColPos(this);showAllMenuCols();" onMouseOut="javascript:hideAllMenuLayers();" onLoad="javascript:updateID();startPoll()" onError="javascript:reloadImage()" width=640 height=480 style="border: 0px solid #000000; border-radius: 25px;">	
+	<img id="camImg" src="img/robocam/loading.png" onMouseOver="javascript:fixMenuColPos(this);showAllMenuCols();" onMouseOut="javascript:hideAllMenuLayers();" onLoad="javascript:updateID();startPoll()" onError="javascript:reloadImage()" width=640 height=480 style="border: 0px solid #000000; border-radius: 25px;">
 	</div>
 	
 	<div id="menu_fps" class="menu" onMouseOver="javascript:showAllMenuCols();hideAllMenuChildren();updateFpsMenu();setLyr(this,'menu_fps_child',true,0);showLayer('menu_fps_child');">

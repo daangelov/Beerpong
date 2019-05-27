@@ -1,1 +1,378 @@
-{% include 'robocam/roboCam.html' %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <link rel="icon" href="{{ base_url() }}/img/favicon.ico"/>
+    <title>Yawcam</title>
+    <style type="text/css">
+        div.menu
+        {
+            margin:0;
+            display: none;
+            width: 214px;
+            border: 0px solid black;
+            background: #231f20;
+
+            padding: 2px 0px;
+            font-family: verdana, arial, helvetica, sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            color: #ffcc00;
+            text-decoration: none;
+            border-right: none;
+            position: absolute;
+        }
+
+        div.passLayer
+        {
+            margin: 0px;
+            display: none;
+            width: 640px;
+            height: 480px;
+            border: 1px solid black;
+            background: none;
+            background-image: url(err);//none; //trick IE there is something in layer
+        padding: 0px 0px;
+            font-family: verdana, arial, helvetica, sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            color: #000000;
+            text-decoration: none;
+            position: absolute;
+            z-index: 5;
+        }
+
+        div.menu_child
+        {
+            margin-left: 0px;
+            display: none;
+            border: none;
+            padding: 0px 0px;
+            position: absolute;
+        }
+
+        a.menu_Item
+        {
+            display: block;
+            margin: 0px;
+            border: 1px solid black;
+            background: #FBFBFB;
+            padding: 2px 6px;
+            font-family: verdana, arial, helvetica, sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: #6C6C6C;
+            width: 214px;
+            border-bottom: none;
+            text-decoration: none;
+        }
+
+        .heading {color: #000000;}
+        .text a:link{ color: #4589ff;}
+        .text a:visited {color: #4589ff;}
+        .text a:hover {color: #ff0000;}
+        .text a:active { color: #ff0000;}
+        .text
+        {
+            font-size: 14px;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            color: #000000;
+        }
+
+    </style>
+    <script type="text/javascript">
+        <!--
+
+        var fps = 30;
+        var quality = 30;
+        var timeout = 33;
+        var baseURL = "http://127.0.0.1:8081/"; //change this to "http://stream_address:8081/" when running on own server.
+        var t_;
+        var i_;
+        var ct_;
+        var id;
+        var xmlHttp;
+        var firstReq=true;
+        var state = "null";
+
+        function updateID()
+        {
+            id = Math.random();
+        }
+
+        function setFps(val)
+        {
+            fps = val;
+            timeout = Math.round(1000.0/fps);
+        }
+
+        function setQ(val)
+        {
+            quality = val;
+        }
+
+        function scaleIn()
+        {
+            document.images.camImg.width = document.images.camImg.width + 40;
+            document.images.camImg.height = document.images.camImg.height + 30;
+        }
+
+        function scaleOut()
+        {
+            document.images.camImg.width = document.images.camImg.width - 40;
+            document.images.camImg.height = document.images.camImg.height - 30;
+        }
+
+        function scaleOrg()
+        {
+            document.images.camImg.width = 640;
+            document.images.camImg.height = 480;
+        }
+
+        function showLayer(theLayer)
+        {
+            getLayer(theLayer).style.display = "block";
+        }
+
+        function hideLayer(theLayer)
+        {
+            getLayer(theLayer).style.display = "none";
+        }
+
+        function hideAllMenuLayers()
+        {
+            hideLayer('menu_fps');
+            hideLayer('menu_fps_child');
+            hideLayer('menu_quality');
+            hideLayer('menu_quality_child');
+            hideLayer('menu_scale');
+            hideLayer('menu_scale_child');
+            hideLayer('menu_about');
+            hideLayer('menu_about_child');
+        }
+
+        function hideAllMenuChildren()
+        {
+            hideLayer('menu_fps_child');
+            hideLayer('menu_quality_child');
+            hideLayer('menu_scale_child');
+            //hideLayer('menu_about_child');
+        }
+
+        function showAllMenuCols()
+        {
+            showLayer('menu_fps');
+            showLayer('menu_quality');
+            showLayer('menu_scale');
+            //showLayer('menu_about');
+        }
+
+        function fixMenuColPos(owner)
+        {
+            setLyr(owner,'menu_fps',false,0);
+            setLyr(owner,'menu_quality',false,1);
+            setLyr(owner,'menu_scale',false,2);
+            //setLyr(owner,'menu_about',false,3);
+        }
+
+        function getLayer(theLayer)
+        {
+            var obj = null;
+            if (document.getElementById)
+            {
+                obj = document.getElementById(theLayer);
+            }
+            else if (document.all)
+            {
+                obj = document.all[theLayer];
+            }
+            else if (document.layers)
+            {
+                obj = document.layers[theLayer];
+            }
+            return obj;
+        }
+
+        function getMarker(val,testVal)
+        {
+            var str = null;
+            if(val == testVal)
+            {
+                str = "<img src='{{ base_url() }}/img/robocam/mrk.gif' style=\"border:none;vertical-align: text-bottom;margin: 0px;\" alt=\"<--\">";
+            }
+            else
+            {
+                str = "";
+            }
+            return str;
+        }
+
+        function showErrorImage()
+        {
+            clearTimeout(t_);
+            clearInterval(i_);
+            document.images.camImg.onload = "";
+            document.images.camImg.src = "img/offline.png";
+            window.status = "Webcam offline";
+        }
+
+        function reloadImage()
+        {
+            var theDate = new Date();
+            var url = baseURL + "out.jpg?";
+            url += ("q="+quality);
+            url += ("&id="+id);
+            url += "&r=";
+            url += theDate.getTime().toString();
+            document.images.camImg.src = url;
+            window.status = "Yawcam streaming...";
+        }
+
+        function fixImageTimeout()
+        {
+            t_ = setTimeout("reloadImage();",timeout);
+        }
+
+        function cTO()
+        {
+            if(state=="running")
+            {
+                clearTimeout(t_);
+                reloadImage();
+            }
+        }
+
+        function updateFpsMenu()
+        {
+            document.getElementById('fps_30').innerHTML = "30 " + getMarker(fps,30);
+            document.getElementById('fps_15').innerHTML = "15 " + getMarker(fps,15);
+            document.getElementById('fps_10').innerHTML = "10 " + getMarker(fps,10);
+            document.getElementById('fps_5').innerHTML = "5 " + getMarker(fps,5);
+            document.getElementById('fps_1').innerHTML = "1 " + getMarker(fps,1);
+        }
+
+        function updateQualityMenu()
+        {
+            document.getElementById('q_75').innerHTML = "75 % " + getMarker(quality,75);
+            document.getElementById('q_50').innerHTML = "50 % " + getMarker(quality,50);
+            document.getElementById('q_40').innerHTML = "40 % " + getMarker(quality,40);
+            document.getElementById('q_30').innerHTML = "30 % " + getMarker(quality,30);
+            document.getElementById('q_20').innerHTML = "20 % " + getMarker(quality,20);
+            document.getElementById('q_10').innerHTML = "10 % " + getMarker(quality,10);
+            document.getElementById('q_5').innerHTML = "5 % " + getMarker(quality,5);
+            document.getElementById('q_1').innerHTML = "1 % " + getMarker(quality,1);
+        }
+
+        function setLyr(obj,lyr,drop,col)
+        {
+            var coors = findPos(obj);
+            var x = document.getElementById(lyr);
+            if(drop == true)
+            {
+                coors[1] = coors[1]+26;
+            }
+            x.style.top = coors[1] + 'px';
+            coors[0] = coors[0]+(col*214);
+            x.style.left = coors[0] + 'px';
+        }
+
+        function findPos(obj)
+        {
+            var curleft = curtop = 0;
+            if (obj.offsetParent)
+            {
+                curleft = obj.offsetLeft
+                curtop = obj.offsetTop
+                while (obj = obj.offsetParent)
+                {
+                    curleft += obj.offsetLeft
+                    curtop += obj.offsetTop
+                }
+            }
+            return [curleft,curtop];
+        }
+
+        function startPoll()
+        {
+            document.images.camImg.onload=fixImageTimeout
+            var url=baseURL+"get?id="+id+"&r="+Math.random()
+            document.images.camImg.src = url;
+            setTimeout("document.images.camImg.onerror=showErrorImage",2000);
+        }
+
+        function fixStatusTimeout()
+        {
+            ts_ = setTimeout("getStatus();",2000);
+        }
+
+        function fixConnectTimeout()
+        {
+            ct_ = setTimeout("showErrorImage();",4000);
+        }
+
+        function moveForMobile(frame){
+            if(document.documentElement.clientWidth < 2*640){
+                frame.style.margin = 0;
+                frame.style.float = 'left';
+            }
+        }
+        -->
+    </script>
+</head>
+
+<body style="background-color: #231f20; background-image: none;">
+<div id="imgLyr" width=640 height=480>
+    <p class="heading"> </p>
+
+    <img id="camImg" src="{{ base_url() }}/img/robocam/loading.png" onMouseOver="javascript:fixMenuColPos(this);showAllMenuCols();" onMouseOut="javascript:hideAllMenuLayers();" onLoad="javascript:updateID();startPoll()" onError="javascript:reloadImage()" width=640 height=480 style="border: 0px solid #000000; border-radius: 25px;">
+</div>
+
+<div id="menu_fps" class="menu" onMouseOver="javascript:showAllMenuCols();hideAllMenuChildren();updateFpsMenu();setLyr(this,'menu_fps_child',true,0);showLayer('menu_fps_child');">
+    <center>Fps</center>
+</div>
+
+<div id="menu_quality" class="menu" onMouseOver="javascript:showAllMenuCols();hideAllMenuChildren();updateQualityMenu();setLyr(this,'menu_quality_child',true,0);showLayer('menu_quality_child');">
+    <center>Quality</center>
+</div>
+
+<div id="menu_scale" class="menu" onMouseOver="javascript:showAllMenuCols();hideAllMenuChildren();setLyr(this,'menu_scale_child',true,0);showLayer('menu_scale_child');">
+    <center>Scale</center>
+</div>
+
+<div id="menu_about" class="menu" style="border-right: 1px solid black;" onMouseOver="javascript:showAllMenuCols();hideAllMenuChildren();setLyr(this,'menu_about_child',true,0);showLayer('menu_about_child');">
+    <center>About</center>
+</div>
+
+<div id="menu_fps_child" class="menu_child" onMouseOver="javascript:showAllMenuCols();showLayer('menu_fps_child');" onMouseOut="javascript:hideLayer('menu_fps_child');" onClick="javascript:updateFpsMenu();hideLayer('menu_fps_child');">
+    <a id="fps_30" class="menu_Item" href="javascript:setFps(30);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">30 </a>
+    <a id="fps_15" class="menu_Item" href="javascript:setFps(15);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">15 </a>
+    <a id="fps_10" class="menu_Item" href="javascript:setFps(10);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">10 </a>
+    <a id="fps_5"  class="menu_Item" href="javascript:setFps(5);cTO();"  onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">5 </a>
+    <a id="fps_1"  class="menu_Item" style="border-bottom: 1px solid black;" href="javascript:setFps(1);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">1 </a>
+</div>
+
+<div id="menu_quality_child" class="menu_child" onMouseOver="javascript:showAllMenuCols();showLayer('menu_quality_child');" onMouseOut="javascript:hideLayer('menu_quality_child');" onClick="javascript:updateQualityMenu();hideLayer('menu_quality_child');">
+    <a id="q_75" class="menu_Item" href="javascript:setQ(75);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">75 % </a>
+    <a id="q_50" class="menu_Item" href="javascript:setQ(50);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">50 % </a>
+    <a id="q_40" class="menu_Item" href="javascript:setQ(40);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">40 % </a>
+    <a id="q_30" class="menu_Item" href="javascript:setQ(30);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">30 % </a>
+    <a id="q_20" class="menu_Item" href="javascript:setQ(20);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">20 % </a>
+    <a id="q_10" class="menu_Item" href="javascript:setQ(10);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">10 % </a>
+    <a id="q_5"  class="menu_Item" href="javascript:setQ(5);cTO();"  onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">5 % </a>
+    <a id="q_1"  class="menu_Item" style="border-bottom: 1px solid black;" href="javascript:setQ(1);cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">1 % </a>
+</div>
+
+<div id="menu_scale_child" class="menu_child" onMouseOver="javascript:showAllMenuCols();showLayer('menu_scale_child');" onMouseOut="javascript:hideLayer('menu_scale_child');" onClick="javascript:hideLayer('menu_scale_child');">
+    <a id="z1" class="menu_Item" href="javascript:scaleIn();cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">Up</a>
+    <a id="z2" class="menu_Item" href="javascript:scaleOut();cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">Down</a>
+    <a id="z3" class="menu_Item" style="border-bottom: 1px solid black;" href="javascript:scaleOrg();cTO();" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">1:1</a>
+</div>
+
+<div id="menu_about_child" class="menu_child" onMouseOver="javascript:showAllMenuCols();showLayer('menu_about_child');" onMouseOut="javascript:hideLayer('menu_about_child');" onClick="javascript:hideLayer('menu_about_child');">
+    <a id="a1" class="menu_Item" href="http://www.yawcam.com" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">Yawcam</a>
+    <a id="a2" class="menu_Item" style="border-bottom: 1px solid black;" href="http://www.yawcam.com/menuinfo.php" onMouseOver="this.style.backgroundColor='#CEE6F9'" onMouseOut="this.style.backgroundColor='#FBFBFB'" onFocus="this.blur()">This menu</a>
+</div>
+
+<iframe id="webapp" src="webGL/index.html" onload="this.focus(); moveForMobile(this);" scrolling="no" style="border: 0px solid black; border-radius: 25px;width:640px; height:480px; float: right; margin-top:-480px; overflow: hidden;"></iframe>
+<p align=center style="color: #ffcc00; font-family: verdana, arial, helvetica, sans-serif; font-weight: 600; font-size: 14px;"> You are now in control. </br> < - Use the arrow keys or touch screen to control the robot - ></p>
+</body>
+</html>

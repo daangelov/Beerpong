@@ -34,6 +34,6 @@ class QueueController extends Controller
 
     public function checkStart(Request $request, Response $response)
     {
-        return $response->withJson(['st' => 0, 'msg' => 'Go play. Feels like I am babysitting lil J']);
+        return $response->withJson(['st' => 1, 'msg' => 'Go play. Feels like I am babysitting lil J']);
     }
 }

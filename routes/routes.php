@@ -11,6 +11,8 @@ use App\Middleware\StartSession;
 $app->add(new StartSession($container['db']));
 
 // Routes access from anyone
+$app->post('/r_ip', GameController::class . ':robotIp');
+$app->get('/hit', GameController::class . ':robotHit');
 
 // Routes accessed only if not logged
 $app->group('', function () {
