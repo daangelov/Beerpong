@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.1
+-- version 4.8.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2019 at 02:22 PM
--- Server version: 10.1.33-MariaDB
--- PHP Version: 7.2.6
+-- Generation Time: May 28, 2019 at 11:25 PM
+-- Server version: 10.1.37-MariaDB
+-- PHP Version: 7.3.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -40,7 +40,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`session_id`, `session_data`, `created_on`, `updated_on`) VALUES
-('7h84iijnmqmiqcvd25rr3s0c03', 'slimFlash|a:0:{}', '2019-05-03 11:21:54', '2019-05-03 11:21:54');
+('355c11eoh9rk5cgct8t08ufi4q', '', '2019-05-27 19:59:14', '2019-05-27 19:59:14'),
+('e3hegcdn1271h1ctdr03gqdfnk', 'slimFlash|a:0:{}userId|s:2:\"68\";username|s:5:\"drago\";logged|b:1;', '2019-05-27 19:58:16', '2019-05-27 20:07:27'),
+('eshh5m45hoio1l89dflob72ajg', 'slimFlash|a:0:{}userId|s:2:\"69\";username|s:5:\"blago\";logged|b:1;', '2019-05-27 19:58:33', '2019-05-27 20:07:24');
 
 -- --------------------------------------------------------
 
@@ -53,8 +55,18 @@ CREATE TABLE `users` (
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `hit` int(11) NOT NULL DEFAULT '0',
+  `miss` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `status`, `created_on`, `updated_on`, `hit`, `miss`) VALUES
+(68, 'drago', 0, '2019-05-27 22:58:52', '2019-05-27 22:58:52', 0, 0),
+(69, 'blago', 0, '2019-05-27 22:58:56', '2019-05-27 22:58:56', 0, 0);
 
 --
 -- Indexes for dumped tables
@@ -80,7 +92,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
