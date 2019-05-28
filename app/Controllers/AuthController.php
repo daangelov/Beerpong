@@ -38,9 +38,10 @@ class AuthController extends Controller
         }
 
         // Everything is OK
-        $stmt = $this->db->prepare('INSERT INTO users (username) VALUES (?)');
+        $stmt = $this->db->prepare('INSERT INTO users (username) VALUES (?);');
         $stmt->execute([$username]);
 
+        $_SESSION['userId'] = $id = $this->db->lastInsertId();
         $_SESSION['username'] = $username;
         $_SESSION['logged'] = true;
 

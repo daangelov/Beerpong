@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use PDO;
+use Slim\Http\Body;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
@@ -20,7 +21,9 @@ class GameController extends Controller
 
     public function robotIp(Request $request, Response $response)
     {
-        return 'shit';
+        $body = new Body(fopen('php://temp', 'r+'));
+        $body->write('SHIT');
+        return $response->withHeader('Content-Type', 'text/plain')->withBody($body);
     }
 
     public function robotHit(Request $request, Response $response)

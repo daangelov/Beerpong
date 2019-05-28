@@ -60,7 +60,7 @@ class SessionSaveHandler implements SessionHandlerInterface
         return false;
     }
 
-    public function gc($maxlifetime = 86400)
+    public function gc($maxlifetime = 120)
     {
         $stmt = $this->db->prepare(
             "DELETE FROM sessions WHERE updated_on < CURRENT_TIMESTAMP - INTERVAL :lifetime SECOND;

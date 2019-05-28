@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use DateTime;
 use PDO;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -34,6 +35,33 @@ class QueueController extends Controller
 
     public function checkStart(Request $request, Response $response)
     {
-        return $response->withJson(['st' => 1, 'msg' => 'Go play. Feels like I am babysitting lil J']);
+        $stmt = $this->db->prepare('
+            SELECT * FROM users WHERE created_on < (
+              SELECT created_on FROM users WHERE id = ?
+            )
+        ');
+        $stmt->execute([$_SESSION['userId']]);
+
+        $prevUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $countPrevUsers = count($prevUsers);
+
+        if ($countPrevUsers > 1) {
+            return $response->withJson(['st' => 0]);
+        } else if ($countPrevUsers > 0) {
+            $prevUserCreatedOn = DateTime::createFromFormat('Y-m-d H:i:s', $prevUsers[0]['created_on'])->getTimestamp();
+            $now = strtotime("-2 minutes");
+
+            if ($prevUserCreatedOn > $now) {
+                return $response->withJson(['st' => 0]);
+            }
+
+            $this->db->query('DELETE FROM users WHERE id = ' . $prevUsers[0]['id']);
+            $this->db->query('UPDATE users SET status = 1 WHERE id = ' . $_SESSION['id']);
+            return $response->withJson(['st' => 1]);
+
+        } else {
+            $this->db->query('UPDATE users SET status = 1 WHERE id = ' . $_SESSION['id']);
+            return $response->withJson(['st' => 1]);
+        }
     }
 }
